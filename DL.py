@@ -4,14 +4,13 @@ Created on Sat Nov 25 13:58:18 2017
 
 @author: bob
 """
-
+from sklearn import preprocessing
 import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 import numpy as np
-import csv
-
-
+from IPython.display import SVG
+from keras.utils.vis_utils import model_to_dot
 fid  = open('/home/bob/code/python/Deep_Learn/hw_data.csv','r')
 r = csv.reader(fid)
 A = []
@@ -21,7 +20,8 @@ for ii in r:
     y.append(int(ii[2]))
 fid.close()
 B = np.array(A)
-
+scaler = preprocessing.StandardScaler().fit(B)
+B= scaler.transform(B)
 
 fid  = open('/home/bob/code/python/Deep_Learn/hw_red.csv','r')
 r = csv.reader(fid)
@@ -32,11 +32,11 @@ for ii in r:
     yt.append(int(ii[2]))
 fid.close()
 D = np.array(C)
-
+D=scaler.transform(D)
 
 
 model = Sequential()
-model.add(Dense(4, input_dim=2, activation='relu'))
+model.add(Dense(1, input_dim=2, activation='relu'))
 #model.add(Dropout(0.5))
 #odel.add(Dense(64, activation='relu'))
 #model.add(Dropout(0.5))
