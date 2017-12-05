@@ -21,7 +21,7 @@ A = []
 y = []
 for ii in r:
     A.append([float(jj) for jj in ii[:2]])
-    y.append(int(ii[2]))
+    y.append(int(ii[2])-1)
 fid.close()
 B = np.array(A)
 scaler = preprocessing.StandardScaler().fit(B)
@@ -36,23 +36,24 @@ C = []
 yt = []
 for ii in r:
     C.append([float(jj) for jj in ii[:2]])
-    yt.append(int(ii[2]))
+    yt.append(int(ii[2])-1)
 fid.close()
 D = np.array(C)
 D=scaler.transform(D)
-yt = to_categorical(yt);
+yt = to_categorical(yt,num_classes=3);
 #yt=list(map(lambda x :x-1,yt));
 
 model = Sequential()
 model.add(Dense(64, input_dim=2, activation='relu'))
-model.add(Dropout(0.5))
+#model.add(Dropout(0.5))
 model.add(Dense(64, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(4, activation='sigmoid'))
+model.add(Dense(64, activation='relu'))
+#model.add(Dropout(0.5))
+model.add(Dense(3, activation='sigmoid'))
 
-model.compile(loss='binary_crossentropy',optimizer='rmsprop',metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy',optimizer='rmsprop',metrics=['accuracy'])
 model.fit(B, y,epochs=20,batch_size=128)
-#score = model.evaluate(D, yt, batch_size=128)
+score = model.evaluate(D, yt, batch_size=128)
 score = model.predict_classes(D)
 model.predict_classes(scaler.transform(np.array([5.0,120.0]).reshape(1,-1)))
 model.predict_classes(scaler.transform(np.array([6.0,150.0]).reshape(1,-1)))
